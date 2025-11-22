@@ -96,7 +96,7 @@ const [editDraft, setEditDraft] = useState(null);
           <button onClick={handleLoadMock}>Load Mock Inbox</button>
           <button 
   onClick={async ()=>{
-    await fetch("http://127.0.0.1:8000/reset_all", {method:"POST"});
+    await fetch("https://emailagent-backend.onrender.com/reset_all", {method:"POST"});
     setOutput("All data reset");
     refreshEmails();
   }} 
@@ -125,7 +125,7 @@ const [editDraft, setEditDraft] = useState(null);
           padding: "2px 6px",
         }}
         onClick={async () => {
-          await fetch(`http://127.0.0.1:8000/delete_email/${e.id}`, { method: "DELETE" });
+          await fetch(`https://emailagent-backend.onrender.com/delete_email/${e.id}`, { method: "DELETE" });
           await refreshEmails();
         }}
       >
