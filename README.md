@@ -4,7 +4,7 @@ A full-stack application that processes emails, categorizes them using LLM promp
 
 ### Live URLs
 
-***Frontend (Netlify):*** https://emailagent.netlify.app
+***Frontend (Netlify):*** https://emailagentapp.netlify.app
 
 ***Backend (Render):*** https://emailagent-backend.onrender.com
 
