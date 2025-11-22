@@ -146,9 +146,46 @@ async def create_draft(d: schemas.DraftIn):
 async def list_processed():
     return storage.read_jsonl("processed")
 
+# -------------------------
+# DRAFT ENDPOINTS (FULL CRUD)
+# -------------------------
+
 @app.get("/drafts")
 async def list_drafts():
     return storage.read_jsonl("drafts")
+
+
+@app.put("/draft/{draft_id}")
+async def update_draft(draft_id: int, d: schemas.DraftIn):
+    drafts = storage.read_jsonl("drafts")
+    found = False
+    updated = []
+
+    for dr in drafts:
+        if dr.get("id") == draft_id:
+            found = True
+            dr["subject"] = d.subject
+            dr["body"] = d.body
+            dr["metadata_json"] = d.metadata_json
+        updated.append(dr)
+
+    if not found:
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    storage.overwrite_jsonl("drafts", updated)
+    return {"updated": draft_id}
+
+
+@app.delete("/draft/{draft_id}")
+async def delete_draft(draft_id: int):
+    drafts = storage.read_jsonl("drafts")
+    filtered = [d for d in drafts if d.get("id") != draft_id]
+
+    if len(filtered) == len(drafts):
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    storage.overwrite_jsonl("drafts", filtered)
+    return {"deleted": draft_id}
 
 @app.post("/reset_all")
 async def reset_all():

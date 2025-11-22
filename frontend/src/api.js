@@ -1,4 +1,5 @@
-const API_BASE = "http://127.0.0.1:8000";
+export const API_BASE = "http://127.0.0.1:8000";
+
 
 export async function fetchEmails() {
   const r = await fetch(`${API_BASE}/emails`);
@@ -38,3 +39,4 @@ export async function listPrompts() {
   const r = await fetch(`${API_BASE}/prompts`);
   return r.json();
 }
+

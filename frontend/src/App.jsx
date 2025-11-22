@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+
 import {
+  API_BASE,
   fetchEmails,
   loadMockInbox,
   loadPrompts,
@@ -17,6 +19,8 @@ export default function App() {
   const [prompts, setPrompts] = useState([]);
   const [promptChoice, setPromptChoice] = useState("");
   const [question, setQuestion] = useState("");
+const [drafts, setDrafts] = useState([]);
+const [editDraft, setEditDraft] = useState(null);
 
   async function refreshEmails() {
     const e = await fetchEmails();
@@ -142,6 +146,7 @@ export default function App() {
 
       </div>
 
+
       {/* CENTER PANEL — EMAIL VIEWER */}
       <div className="viewer">
         <h3>Email Viewer</h3>
@@ -197,6 +202,121 @@ export default function App() {
           </div>
         </div>
       </div>
+{/* RIGHT PANEL — DRAFTS */}
+<div className="agent" style={{ width: "30%", padding: 22 }}>
+  <h3>Drafts</h3>
+
+  {/* Load Drafts */}
+  <button
+    onClick={async () => {
+      const res = await fetch(`${API_BASE}/drafts`);
+      const data = await res.json();
+      setDrafts(data);
+    }}
+    style={{ marginBottom: 10 }}
+  >
+    Refresh Drafts
+  </button>
+
+  {/* List of drafts */}
+  <ul style={{ listStyle: "none", padding: 0 }}>
+    {drafts.map((d) => (
+      <li key={d.id} style={{ marginBottom: 10 }}>
+        <strong>{d.subject}</strong>
+
+        {/* Edit button */}
+        <button
+          style={{ marginLeft: 10 }}
+          onClick={() => setEditDraft(d)}
+        >
+          Edit
+        </button>
+
+        {/* Delete button */}
+        <button
+          style={{
+            marginLeft: 10,
+            background: "#ff4444",
+            color: "white",
+            border: "none",
+            padding: "3px 7px",
+            borderRadius: 4,
+          }}
+          onClick={async () => {
+            await fetch(`${API_BASE}/draft/${d.id}`, {
+              method: "DELETE",
+            });
+            const res = await fetch(`${API_BASE}/drafts`);
+            setDrafts(await res.json());
+          }}
+        >
+          Delete
+        </button>
+      </li>
+    ))}
+  </ul>
+
+  {/* EDIT DRAFT MODAL */}
+  {editDraft && (
+    <div className="modal">
+      <div className="modal-content">
+        <h3>Edit Draft #{editDraft.id}</h3>
+
+        <label>Subject</label>
+        <input
+          type="text"
+          value={editDraft.subject}
+          onChange={(e) =>
+            setEditDraft({ ...editDraft, subject: e.target.value })
+          }
+        />
+
+        <label style={{ marginTop: 10 }}>Body</label>
+        <textarea
+          rows={6}
+          value={editDraft.body}
+          onChange={(e) =>
+            setEditDraft({ ...editDraft, body: e.target.value })
+          }
+        />
+
+        <button
+          className="primary"
+          style={{ marginTop: 12 }}
+          onClick={async () => {
+            await fetch(`${API_BASE}/draft/${editDraft.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                subject: editDraft.subject,
+                body: editDraft.body,
+                metadata_json: editDraft.metadata_json || "{}",
+                email_id: editDraft.email_id,
+              }),
+            });
+
+            // reload drafts
+            const r = await fetch(`${API_BASE}/drafts`);
+            setDrafts(await r.json());
+
+            setEditDraft(null);
+          }}
+        >
+          Save Changes
+        </button>
+
+        <button
+          style={{ marginTop: 10 }}
+          onClick={() => setEditDraft(null)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
+
     </div>
   );
 }
