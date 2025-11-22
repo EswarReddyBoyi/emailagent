@@ -1,4 +1,4 @@
-<img width="1919" height="1199" alt="image" src="https://github.com/user-attachments/assets/139343a0-2439-4e17-b68e-312052600866" />### Email Productivity Agent
+### Email Productivity Agent
 
 A full-stack application that processes emails, categorizes them using LLM prompts, extracts action items, generates reply drafts, and provides an AI-powered chat interface. The system supports custom prompt configuration, full CRUD for drafts, inbox management, and a clean UI.
 
@@ -12,6 +12,7 @@ A full-stack application that processes emails, categorizes them using LLM promp
 
 ### Features
 
+```
 Email Ingestion
 
 Load mock inbox (20 sample emails)
@@ -25,11 +26,12 @@ Reset all data
 Prompt Management
 
 Load default prompts (3 types)
+````
 
 ------------
 
 ***Supports:***
-
+```
 Categorization prompt
 
 Action-item extraction prompt
@@ -65,6 +67,7 @@ Edit draft (subject + body)
 Delete draft
 
 All drafts persisted in drafts.jsonl
+````
 
 ----------
 
